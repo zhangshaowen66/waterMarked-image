@@ -5,7 +5,7 @@
 ## ✨ 安装
 
 ```bash
-npm install watermark-image
+npm install z-watermark-image
 ```
 ## 🚀 使用
 ```js
