@@ -1,0 +1,20 @@
+{
+  "name": "z-watermark-image",
+  "version": "1.0.1",
+  "description": "一个纯浏览器端的图片加水印工具函数，基于 canvas 实现。",
+  "main": "dist/index.js",
+  "keywords": [
+    "watermark",
+    "canvas",
+    "image",
+    "browser",
+    "utility",
+    "javascript"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zsw",
+  "license": "ISC",
+  "type": "module"
+}
