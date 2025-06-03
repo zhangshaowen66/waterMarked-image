@@ -9,8 +9,15 @@ npm install z-watermark-image
 ```
 ## 🚀 使用
 ```js
-// 返回的是blob对象 
-const watermarkedBlob = await watermarkImage(file, '文本文本')
+// 返回的是blob对象
+/* options 可选提供  {
+    fontSize,
+    gapX,
+    gapY,
+    opacity
+}
+*/
+const watermarkedBlob = await watermarkImage(file, '文本文本', options)
 // 创建一个File对象
 const watermarkedFile = new File([watermarkedBlob], file.name, { type: file.type })
 ```
