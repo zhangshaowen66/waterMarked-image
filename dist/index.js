@@ -17,7 +17,8 @@ export default function (file, name) {
           fontSize = 20,
           gapX = 300,
           gapY = 100,
-          opacity = 0.15
+          opacity = 0.15,
+          size = 0.6
         } = options
 
         // 配置项
@@ -32,8 +33,9 @@ export default function (file, name) {
           ctx.drawImage(img, 0, 0)
 
 
+          const dynamicFontSize = Math.max(20, img.width * 0.02)
           // 设置字体样式
-          ctx.font = `bold ${fontSize}px ${font}`
+          ctx.font = `bold ${dynamicFontSize}px ${font}`
           ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`
           ctx.textAlign = 'center'
           ctx.textBaseline = 'middle'
@@ -66,7 +68,7 @@ export default function (file, name) {
           canvas.toBlob(blob => {
             if (blob) resolve(blob)
             else reject(new Error('canvas 转 blob 失败'))
-          }, 'image/png')
+          }, 'image/jpeg', size)
         }
 
         img.onerror = () => reject(new Error('图片加载失败'))

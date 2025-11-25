@@ -14,7 +14,8 @@ npm install z-watermark-image
     fontSize,
     gapX,
     gapY,
-    opacity
+    opacity,
+    size  // 压缩图片大小。默认为0.6  0 - 1 之间 
 }
 */
 const watermarkedBlob = await watermarkImage(file, '文本文本', options)

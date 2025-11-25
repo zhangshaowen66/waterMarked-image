@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8" />
+    <title>单行水印测试</title>
+    <style>
+        body { font-family: 'Microsoft YaHei', sans-serif; padding: 20px; line-height: 1.8; }
+        label { display: inline-block; width: 120px; }
+        input[type="number"], input[type="text"] { width: 160px; margin-bottom: 5px; }
+        canvas { max-width: 100%; border: 1px solid #ccc; display: block; margin-top: 20px; }
+        .controls { margin-top: 10px; }
+        .btn { padding: 6px 16px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<h2>图片加水印（单行）</h2>
+<input type="file" id="upload" accept="image/*" />
+
+<div class="controls">
+    <div><label>水印文字：</label><input id="line1" value="仅供认证使用，请勿外传" /></div>
+    <div><label>字体大小：</label><input type="number" id="fontSize" value="36" /></div>
+    <div><label>透明度(0~1)：</label><input type="number" step="0.05" id="opacity" value="0.15" /></div>
+    <div><label>旋转角度：</label><input type="number" id="angle" value="-30" /></div>
+    <div><label>横向间距：</label><input type="number" id="gapX" value="300" /></div>
+    <div><label>纵向间距：</label><input type="number" id="gapY" value="100" /></div>
+    <button class="btn" onclick="downloadImage()">下载加水印图片</button>
+</div>
+
+<canvas id="canvas"></canvas>
+
+<script>
+  const upload = document.getElementById('upload')
+  const canvas = document.getElementById('canvas')
+  const ctx = canvas.getContext('2d')
+
+  upload.addEventListener('change', async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    const dataURL = await readFileAsDataURL(file)
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    img.onload = () => applyWatermark(img)
+    img.src = dataURL
+  })
+
+  function readFileAsDataURL(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = e => resolve(e.target.result)
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
+  function applyWatermark(img) {
+    const text = document.getElementById('line1').value.trim()
+    const fontSize = parseInt(document.getElementById('fontSize').value)
+    const opacity = parseFloat(document.getElementById('opacity').value)
+    const angle = parseFloat(document.getElementById('angle').value) * Math.PI / 180
+    const gapXInput = parseInt(document.getElementById('gapX').value)
+    const gapY = parseInt(document.getElementById('gapY').value)
+
+    canvas.width = img.width
+    canvas.height = img.height
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.drawImage(img, 0, 0)
+
+    ctx.font = `bold ${fontSize}px Microsoft YaHei`
+    ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    const textWidth = ctx.measureText(text).width
+    const safeGapX = Math.max(gapXInput, textWidth + 50)
+
+    const diagonal = Math.sqrt(canvas.width ** 2 + canvas.height ** 2)
+    const cols = Math.ceil(diagonal / safeGapX)
+    const rows = Math.ceil(diagonal / gapY)
+
+    ctx.translate(canvas.width / 2, canvas.height / 2)
+    ctx.rotate(angle)
+    ctx.translate(-canvas.width / 2, -canvas.height / 2)
+
+    for (let i = -cols; i < cols; i++) {
+      for (let j = -rows; j < rows; j++) {
+        const x = i * safeGapX + canvas.width / 2
+        const y = j * gapY + canvas.height / 2
+        ctx.fillText(text, x, y)
+      }
+    }
+
+    ctx.setTransform(1, 0, 0, 1, 0, 0)
+  }
+
+  function downloadImage() {
+    const link = document.createElement('a')
+    link.download = 'watermarked.png'
+    link.href = canvas.toDataURL('image/png')
+    link.click()
+  }
+</script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 {
   "name": "z-watermark-image",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "一个纯浏览器端的图片加水印工具函数，基于 canvas 实现。",
   "main": "dist/index.js",
   "keywords": [
